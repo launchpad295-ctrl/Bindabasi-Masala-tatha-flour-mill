@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Artisan spice or nut product",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "basePrice": { "type": "number" },
+        "category": { "type": "string", "enum": ["Spices", "Nuts", "Blends"] },
+        "stockQuantity": { "type": "number" },
+        "threshold": { "type": "number", "description": "Low stock notification threshold" },
+        "unit": { "type": "string", "description": "e.g., g, oz" },
+        "tier": { "type": "string", "enum": ["Basic", "Standard", "Premium"] }
+      },
+      "required": ["name", "basePrice", "category", "stockQuantity", "tier"]
+    },
+    "CustomBlend": {
+      "title": "Custom Blend",
+      "description": "User created spice blend",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "userId": { "type": "string" },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "quantity": { "type": "number" }
+            }
+          }
+        },
+        "totalPrice": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "ingredients", "totalPrice"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "delivered"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "email": { "type": "string" },
+        "shippingAddress": { "type": "object" }
+      },
+      "required": ["userId", "items", "totalAmount", "status", "createdAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Product review and rating",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "userId", "rating", "createdAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Master list of spices and nuts"
+    },
+    "/customBlends/{blendId}": {
+      "schema": "CustomBlend",
+      "description": "User saved blends"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Product reviews"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles"
+    }
+  }
+}
